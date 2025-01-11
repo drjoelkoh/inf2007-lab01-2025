@@ -39,7 +39,9 @@ fun MainScreen() {
     Lab01Theme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             var username by remember { mutableStateOf("") }
+            var usernameSubmitted by remember { mutableStateOf("") }
             var showGreeting by remember { mutableStateOf(false) }
+
 
             Column(
                 modifier = Modifier
@@ -50,12 +52,17 @@ fun MainScreen() {
             ) {
                 UserInput(
                     name = username,
-                    onNameChange = { name = it }
+                    onNameChange = { username = it },
+                    modifier = Modifier.testTag("nameInput")
                 )
 
                 Button(
                     onClick = {
                         if (username.isNotBlank()) {
+                            usernameSubmitted = username
+                            showGreeting = true
+                        }
+                        else {
                             showGreeting = false
                         }
                     },
@@ -67,11 +74,12 @@ fun MainScreen() {
                 }
 
                 if (showGreeting) {
-                    Greeeting(
-                        name = username,
+                    Greeting(
+                        name = usernameSubmitted,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)
+                            .testTag("greetingMsg")
                     )
 
                 }
@@ -95,8 +103,8 @@ fun UserInput(name: String, onNameChange: (String) -> Unit, modifier: Modifier =
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $username!, Welcome to InF2007!",
-        modifier = Modifier
+        text = "Hello $name!, Welcome to InF2007!",
+        modifier = modifier
             .fillMaxWidth()
             .testTag("greeting")
     )
